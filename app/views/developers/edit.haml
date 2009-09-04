@@ -1,0 +1,18 @@
+.page-title= "Edit Developer #{@developer.name}"
+
+%form{:action => "/developer/#{@developer.id}", :method => "post", :name => "edit_developer_#{@developer.id}"}
+  %input{:type => "hidden", :name => "_method", :value => "put"}
+  .row
+    .label Name
+    .input
+      %input{:type => "text", :name => "name", :value => @developer.name}
+  .row
+    .label Email
+    .input
+      %input{:type => "text", :name => "email", :value => @developer.email}
+  .row
+    .label &nbsp;
+    .input
+      %input{:type => "submit", :name => "submit", :value => "Update Information"}
+      or
+      %a{:href => "/developers", :title => "Cancel developer edit"} Cancel

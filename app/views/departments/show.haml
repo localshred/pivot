@@ -1,0 +1,20 @@
+.page-title Show Department
+
+.context-nav.left
+  %a{:href => "/departments", :title => "Back to All Departments"} &laquo; All Departments
+
+-if @department.nil?
+  .clear= "Could not find Department with id of #{params[:department_id]}"
+-else
+  .context-nav.right
+    %a{:href => "/department/#{@department.id}/edit", :title => "Edit #{@department.name}"} Edit
+    or
+    != partial :delete_form_button, :action => "/department/#{@department.id}/delete", :id => @department.id
+    
+  #department
+    .row
+      .label Name:
+      .value= @department.name
+    .row
+      .label Contact:
+      .value= @department.contact

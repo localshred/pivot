@@ -1,0 +1,22 @@
+.page-title Departments
+
+.context-nav.right
+  %a{:href => "/department/new", :title => "Create Department"} + New Department
+  
+- if !@departments.empty?
+  %table#department-list.data-horizontal
+    %tr
+      %th Name
+      %th Contact
+      %th Actions
+    - @departments.each do |department|
+      %tr.department
+        %td= department.name
+        %td= department.contact
+        %td
+          %a{:href => "/department/#{department.id}/edit", :title => "Edit #{department.name}"} Edit
+          or
+          != partial :delete_form_button, :action => "/department/#{department.id}", :id => department.id
+      
+- else
+  No departments found here

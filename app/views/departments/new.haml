@@ -1,0 +1,17 @@
+.page-title Create New Department
+
+%form{:action => "/department", :method => "post", :name => "new_department"}
+  .row
+    .label Name
+    .input
+      %input{:type => "text", :name => "name"}
+  .row
+    .label Contact
+    .input
+      %input{:type => "text", :name => "contact"}
+  .row
+    .label &nbsp;
+    .input
+      %input{:type => "submit", :name => "submit", :value => "Create"}
+      or
+      %a{:href => "/departments", :title => "Cancel new department creation"} Cancel

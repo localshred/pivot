@@ -1,0 +1,17 @@
+.page-title Create New Developer
+
+%form{:action => "/developer", :method => "post", :name => "new_developer"}
+  .row
+    .label Name
+    .input
+      %input{:type => "text", :name => "name"}
+  .row
+    .label Email
+    .input
+      %input{:type => "text", :name => "email"}
+  .row
+    .label &nbsp;
+    .input
+      %input{:type => "submit", :name => "submit", :value => "Create"}
+      or
+      %a{:href => "/developers", :title => "Cancel new developer creation"} Cancel

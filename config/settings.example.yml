@@ -1,0 +1,15 @@
+defaults: &defaults
+  :log_level: warn
+  :active_record:
+      :adapter: sqlite3
+      :database: "db/sqlite/pivot.db"
+
+:development:
+  <<: *defaults
+  :log_level: debug
+
+:test:
+  <<: *defaults
+
+:production:
+  <<: *defaults

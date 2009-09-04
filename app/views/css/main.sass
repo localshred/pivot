@@ -1,0 +1,183 @@
+html
+  :height 100%
+  
+body
+  :background-color white
+  :font-family "Lucida Grande", sans-serif
+  :font-size 14px
+  :padding 0
+  :color #333
+  :height 100%
+
+=cf
+  *display:     inline-block
+  &:after
+    content:    " "
+    display:    block
+    height:     0
+    clear:      both
+    visibility: hidden
+
+=title
+  :font-family "Helvetica", sans-serif
+  :font-size 2em
+  :font-weight bold
+  :text-transform lowercase
+  :margin-bottom 20px
+
+=left
+  float: left
+
+=right
+  float: right
+  
+
+h1
+  :font-size 2em
+
+h2
+  :font-size 1.4em
+
+=link
+  :color #1a5c8a
+  :text-decoration none
+  :border-bottom 1px solid #1a5c8a
+
+a
+  +link
+  
+a:hover,
+a:visited:hover
+  :border-bottom none
+
+form
+  > p
+    label
+      +title
+
+    input
+      :font-size 2em
+      :margin 5px 0 0 0
+
+  p
+    :margin 10px 0
+
+  fieldset
+    :border-width 0
+    :padding 0
+    :margin 20px 0
+
+    legend
+      +title
+
+  span.example
+    :color #777
+  
+  input[type="text"]
+    :border 1px solid #333
+    :font-size 20px
+    
+form.inline-button
+  :display inline-block
+
+#wrapper
+  +cf
+  :margin 0 auto
+  :width 800px
+  :border 3px solid #333
+  :border-style none solid
+  :background #ccc
+  :height 100%
+
+#header
+  +cf
+  :background #333
+  :color #ddd
+  :margin-bottom 10px
+  :padding 10px 20px
+  :border-bottom 1px dotted #999
+  
+  a
+    :color #ddd
+    :border-bottom-color #ddd
+  
+  ul#menu
+    :margin 10px 0
+    :list-style none
+    
+    li
+      :float left
+      :margin 0 10px 0 0
+  
+#content
+  +cf
+  #guts
+    :padding 0 20px 10px
+    
+.page-title
+  +title
+
+.context-nav
+  :margin-bottom 10px
+  
+table.data-horizontal
+  :clear both
+  :width 100%
+  th
+    :font-weight normal
+    :color #fff
+    :background #666
+    :text-align left
+  th, td
+    :padding 3px
+    
+.row
+  :clear both
+  :padding 3px 0
+  
+  .label,
+  .value
+    :float left
+    
+  .label 
+    :width 150px
+    
+.strong
+  :font-weight bold
+  
+.emphasis
+  :font-style italic
+
+.underline
+  :text-decoration underline
+  
+.left
+  +left
+
+.right
+  +right
+  
+.clear
+  :clear both
+
+#messages
+  ul
+    :margin 10px 0
+    :padding 0
+    li
+      :margin 5px
+      :padding 5px
+      :color #333
+    
+  .messages
+    ul
+      li
+        :background #A2D779
+        :border 1px solid #288B00 
+    
+  .errors
+    ul
+      li
+        :background #EB938E
+        :border 1px solid #881A15
+    

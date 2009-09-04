@@ -1,0 +1,37 @@
+.page-title
+  - if @archive_view 
+    Archived Projects
+  - else
+    Projects
+
+.context-nav.right
+  %a{:href => "/projects?show_archived=true", :title => "Show Archived Projects"} Show Archived Projects
+
+- if !@projects.empty?
+  %table#project-list.data-horizontal
+    %tr
+      %th Name
+      %th Lead
+      %th Department
+      %th Orig Target
+      %th Cur Target
+      %th Completion
+      %th Actions
+    - @projects.each do |project|
+      %tr.project
+        %td
+          %a{:href => "/project/#{project.id}", :title => project.name} #{project.name}
+          %a{:href => project.url, :title => "Project on Pivotal Tracker (External link)", :target => "_blank"} &#x2B00;
+        %td!= link_to_developer(project.meta.developer)
+        %td!= link_to_department(project.meta.department)
+        %td!= show_date(project.meta.original_target_date)
+        %td!= show_date(project.meta.current_target_date)
+        %td= "#{project.meta.num_completed_stories}/#{project.meta.num_stories} (#{project.meta.completion_ratio}%)"
+        %td
+          %a{:href => "/project/#{project.id}/edit", :title => "Edit Project Settings"} Edit
+          |
+          %a{:href => "/project/#{project.id}/archive", :title => "Archive Project"} Archive
+- else
+  .error
+    Sorry, but we couldn't find any projects. Maybe something went wrong?
+    %a{:href => "http://www.pivotaltracker.com", :title => "Go see what went wrong", :target => "_blank"} Go and check, we'll wait here.

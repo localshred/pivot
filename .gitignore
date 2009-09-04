@@ -1,0 +1,5 @@
+/config/settings.yml
+/tmp
+/webrat.log
+/vendor/webrat/vendor
+db/sqlite/pivot.db

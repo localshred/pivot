@@ -1,0 +1,20 @@
+.page-title Show Developer
+
+.context-nav.left
+  %a{:href => "/developers", :title => "Back to All Developers"} &laquo; All Developers
+
+-if @developer.nil?
+  .clear= "Could not find Developer with id of #{params[:developer_id]}"
+-else
+  .context-nav.right
+    %a{:href => "/developer/#{@developer.id}/edit", :title => "Edit #{@developer.name}"} Edit
+    or
+    != partial :delete_form_button, :action => "/developer/#{@developer.id}/delete", :id => @developer.id
+    
+  #developer
+    .row
+      .label Name:
+      .value= @developer.name
+    .row
+      .label Email:
+      .value!= show_email(@developer)

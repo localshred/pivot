@@ -1,0 +1,18 @@
+.page-title= "Edit Department #{@department.name}"
+
+%form{:action => "/department/#{@department.id}", :method => "post", :name => "edit_department_#{@department.id}"}
+  %input{:type => "hidden", :name => "_method", :value => "put"}
+  .row
+    .label Name
+    .input
+      %input{:type => "text", :name => "name", :value => @department.name}
+  .row
+    .label Contact
+    .input
+      %input{:type => "text", :name => "contact", :value => @department.contact}
+  .row
+    .label &nbsp;
+    .input
+      %input{:type => "submit", :name => "submit", :value => "Update Information"}
+      or
+      %a{:href => "/departments", :title => "Cancel department edit"} Cancel

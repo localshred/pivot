@@ -1,0 +1,29 @@
+!!! Strict
+%html
+  %head
+    %title BidSync Project Manager Tool
+    %meta{:"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}/
+    %link{:rel => "stylesheet", :href => "/css/reset.css", :type => "text/css"}/
+    %link{:rel => "stylesheet", :href => "/css/main.css", :type => "text/css"}/
+
+  %body
+    #wrapper
+    
+      #header
+        %h1#title BidSync PivotalTracker
+        %ul#menu
+          %li
+            %a{:title => "Projects", :href => "/projects"} Projects
+          %li
+            %a{:title => "Developers", :href => "/developers"} Developers
+          %li
+            %a{:title => "Departments", :href => "/departments"} Departments
+    
+      #content
+        #guts
+          #messages
+            != show_session_messages
+            != show_session_errors
+          != yield
+      
+      #footer
