@@ -29,6 +29,8 @@ Dir[root_path("app/**/*.rb")].each do |file|
   require file
 end
 
+puts "Jared"
+
 require "db/create_tables"
 class Main < Monk::Glue
   configure :development, :test, :production do
