@@ -12,7 +12,7 @@ class Main
         elsif !datetime.is_a? Time
           raise ArgumentError, "Invalid object passed to show_date"
         end
-        full_date = datetime.strftime("%m-%d-%Y")
+        full_date = datetime.strftime("%m.%d.%Y")
         haml "%span{:title => \"#{full_date}\"} #{nice_date(datetime)}", :layout => false
       end
     end

@@ -14,7 +14,10 @@
     .label Original Target Date
     .input
       - if @project.original_target_date.nil?
-        %input{:type => "text", :name => "original_target_date", :value => @project.current_target_date}
+        %input{:type => "text", :name => "original_target_date", :value => @project.current_target_date.strftime("%m/%d/%Y")}
+        (
+        %a{:href => "javascript:void(0);", :onclick => "document.forms[0].original_target_date.value = '';", :title => "Clear Original Date"} Clear
+        )
       - else
         != show_date @project.current_target_date
         (
