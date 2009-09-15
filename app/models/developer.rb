@@ -10,7 +10,11 @@ class Developer < ActiveRecord::Base
   validates_presence_of :name, :email
   
   def first_name
-    name.split(" ").first
+    if name =~ /\s+/
+      name.split(" ").first 
+    else
+      name
+    end
   end
   
 end

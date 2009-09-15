@@ -70,6 +70,8 @@ class Main
     else
       name = @department.name
       @department.delete
+      @projects = ProjectMeta.find_all_by_department_id params[:department_id]
+      @projects.each {|project| project.department_id = nil; project.save} unless @projects.nil? || @projects.empty?
       add_message "Successfully deleted department #{name}"
     end
     redirect "/departments"

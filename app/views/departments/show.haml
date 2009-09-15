@@ -1,7 +1,7 @@
 .context-nav.right
   %a{:href => "/department/#{@department.id}/edit", :title => "Edit #{@department.name}"} Edit
   or
-  != partial :"partials/delete_form_button", :action => "/department/#{@department.id}/delete", :id => @department.id
+  != partial :"partials/delete_form_button", :action => "/department/#{@department.id}", :id => @department.id
 
 .page-title!= "#{@department.name} (#{@department.contact})"
   

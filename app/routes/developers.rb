@@ -69,6 +69,8 @@ class Main
     else
       name = @developer.name
       @developer.delete
+      @projects = ProjectMeta.find_all_by_developer_id params[:developer_id]
+      @projects.each {|project| project.developer_id = nil; project.save} unless @projects.nil? || @projects.empty?
       add_message "Successfully deleted developer #{name}"
     end
     redirect "/developers"

@@ -17,7 +17,7 @@
         %td
           %a{:href => "/developer/#{developer.id}/edit", :title => "Edit #{developer.name}"} Edit
           or
-          != partial :"partials/delete_form_button", :action => "/developer/#{developer.id}/delete", :id => developer.id
+          != partial :"partials/delete_form_button", :action => "/developer/#{developer.id}", :id => developer.id
       
 - else
   No developers found here
