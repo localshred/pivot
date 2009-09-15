@@ -1,0 +1,5 @@
+log/*
+*.swp
+Session.vim
+test/**.yml
+tmp/*
