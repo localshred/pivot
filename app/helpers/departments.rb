@@ -9,5 +9,10 @@ class Main
       end
     end
     
+    def departments_drop_down(option_to_select=nil)
+      departments = Department.all_sorted.map{|department| {:key => department.id, :value => department.name} }
+      drop_down :collection => departments, :name => "department_id", :select => option_to_select
+    end
+    
   end
 end

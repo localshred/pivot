@@ -3,12 +3,14 @@ class Main
   
   # List active departments
   get "/departments/?" do
-    @departments = Department.all
+    @departments = Department.all_sorted
+    @page_title = "Departments"
     haml :"departments/index"
   end
 
   # New department form
   get "/department/new/?" do
+    @page_title = "New Department"
     haml :"departments/new"
   end
   
@@ -26,23 +28,29 @@ class Main
   
   # Show the department details
   get "/department/:department_id/?" do
-    @department = Department[params[:department_id]]
+    @department = Department.find params[:department_id]
+    if @department.nil?
+      add_error "Could not find the department with id of #{params[:department_id]}"
+      redirect "/departments"
+    end
+    @page_title = "Showing Department '#{@department.name}'"
     haml :"departments/show"
   end
   
   # Edit the department
   get "/department/:department_id/edit/?" do
-    @department = Department[params[:department_id]]
+    @department = Department.find params[:department_id]
     if @department.nil?
       add_error "Could not find the department with id of #{params[:department_id]}"
       redirect "/departments"
     end
+    @page_title = "Edit Department '#{@department.name}'"
     haml :"departments/edit"
   end
   
   # Update the department-specific settings
   put "/department/:department_id/?" do
-    @department = Department[params[:department_id]]
+    @department = Department.find params[:department_id]
     if @department.nil?
       add_error "Could not find department with id of #{params[:department_id]}"
     else
@@ -56,7 +64,7 @@ class Main
   
   # Delete Department
   delete "/department/:department_id/?" do
-    @department = Department[params[:department_id]]
+    @department = Department.find params[:department_id]
     if @department.nil?
       add_error "Could not find department with id of #{params[:department_id]}"
     else

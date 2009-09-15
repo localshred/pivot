@@ -9,21 +9,44 @@ class Main
     end
     
     def nice_date(old_date)
-      diff = (Date.today - old_date).to_i
+      singular = false
+      past = false
+      
+      if old_date.is_a? Time
+        old_date = old_date.to_date
+      elsif !old_date.is_a? Date
+        old_date = Date.parse(old_date)
+      end
+      
+      if Date.today > old_date
+        past = true
+        diff = (Date.today - old_date).to_i
+      else
+        diff = (old_date - Date.today).to_i
+      end
+      
       if diff == 0
         result = 'Today'
+        singular = true
       elsif diff == 1
-        result = "Yesterday"
+        result = past ? "Yesterday" : "Tomorrow"
+        singular = true
       elsif diff <= 7
-        result = "#{diff} days ago"
+        result = "#{diff} days"
       elsif diff <= 30
-        result = "#{(diff/7).to_i} weeks ago"
+        result = "#{(diff/7).to_i} weeks"
       elsif diff <= 365
-        result = "#{(diff/12).to_i} months ago"
+        result = "#{(diff/12).to_i} months"
       elsif diff > 365
-        result = "#{(diff/365).to_i}+ years ago"
+        result = "#{(diff/365).to_i}+ years"
       end
-      result
+      result = past && !singular ? result+" ago" : "in "+result
+    end
+    
+    def show_float(float, prec=2)
+      float = float.to_f if !float.is_a?(Float)
+      float *= 100.0 if float <= 1.0
+      sprintf("%.#{prec}f", float)
     end
 
     # MESSAGES
@@ -35,7 +58,7 @@ class Main
     def show_session_messages
       messages = session[MESSAGE_KEY]
       clear_session_messages
-      partial :show_messages, :messages => messages, :message_class => "messages" if session_has_messages?
+      partial :"partials/show_messages", :messages => messages, :message_class => "messages" unless messages.nil? || messages.empty?
     end
     
     def session_has_messages?
@@ -55,7 +78,7 @@ class Main
     def show_session_errors
       messages = session[ERROR_KEY]
       clear_session_errors
-      partial :show_messages, :messages => messages, :message_class => "errors" if session_has_errors?
+      partial :"partials/show_messages", :messages => messages, :message_class => "errors" unless messages.nil? || messages.empty?
     end
     
     def session_has_errors?
@@ -64,6 +87,15 @@ class Main
     
     def clear_session_errors
       session[ERROR_KEY] = []
+    end
+    
+    def alt_row_color
+      @row = @row == 1 ? 0 : 1
+      "alt-row" if @row == 1
+    end
+    
+    def drop_down(options)
+      partial :"partials/drop_down", :collection => options[:collection], :name => options[:name], :select => options[:select]
     end
 
   end

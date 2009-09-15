@@ -1,0 +1,33 @@
+.page-title= "Project #{@project.name}"
+
+.context-nav.right
+  %a{:href => "/project/#{@project.id}/sync", :title => "Synchronize Project"} Sync
+  |
+  %a{:href => "/project/#{@project.id}/edit", :title => "Edit Project"} Edit
+  |
+  %form{:method => "post", :name => " #{archive_action(@project.is_active)}_project_#{@project.id}", :action => "/project/#{@project.id}/#{archive_action(@project.is_active)}", :class => "inline-button", :onsubmit => "return confirm(\"Are you sure you would like to #{archive_action(@project.is_active)} this project?\");"}
+    %input{:type => "hidden", :name => "_method", :value => "put"}
+    %input{:type => "submit", :value => archive_action(@project.is_active).capitalize}
+
+- if !@project.nil?
+  %table#project-list.data-vertical
+    %tr{:class => alt_row_color}
+      %th Name
+      %td
+        %a{:href => "/project/#{@project.id}", :title => @project.name} #{@project.name}
+        %a{:href => external_project_link(@project), :title => "Project on Pivotal Tracker (External link)", :target => "_blank"} &#x2B00;
+    %tr{:class => alt_row_color}
+      %th Lead
+      %td!= link_to_developer(@project.developer, false)
+    %tr{:class => alt_row_color}
+      %th Department
+      %td!= link_to_department(@project.department)
+    %tr{:class => alt_row_color}
+      %th Original Target
+      %td!= show_date(@project.original_target_date)
+    %tr{:class => alt_row_color}
+      %th Current Target
+      %td!= show_date(@project.current_target_date)
+    %tr{:class => alt_row_color}
+      %th Completion
+      %td= "#{@project.num_completed_stories}/#{@project.num_stories} (#{show_float @project.completion_ratio}%)"

@@ -1,0 +1,6 @@
+%select{:name => name}
+  %option{:value => "", :class => "emphasis", :selected => select.nil?} Select
+  - unless collection.size <= 0
+    - collection.each do |option|
+      %option{:value => option[:key], :selected => (select == option[:key])}= option[:value]
+    

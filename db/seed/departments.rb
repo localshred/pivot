@@ -1,0 +1,7 @@
+Department.create!(:name => "Accounting", :contact => "Sabrina Stover")
+Department.create!(:name => "Agency Sales", :contact => "Mike Madsen")
+Department.create!(:name => "Agency Support", :contact => "Shannon McCaul")
+Department.create!(:name => "BidSync Research", :contact => "Jason McCaul")
+Department.create!(:name => "BidSync Sales", :contact => "Parris McCaul")
+Department.create!(:name => "Development", :contact => "Eric Shipek")
+Department.create!(:name => "IT", :contact => "Jared Smith")

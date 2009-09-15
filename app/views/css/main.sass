@@ -38,6 +38,10 @@ h1
 h2
   :font-size 1.4em
 
+h1, h2, h3, h4, h5, h6
+  :margin-bottom 20px
+
+
 =link
   :color #1a5c8a
   :text-decoration none
@@ -102,6 +106,7 @@ form.inline-button
     :border-bottom-color #ddd
   
   ul#menu
+    +right
     :margin 10px 0
     :list-style none
     
@@ -120,16 +125,24 @@ form.inline-button
 .context-nav
   :margin-bottom 10px
   
-table.data-horizontal
+table.data-horizontal,
+table.data-vertical
   :clear both
   :width 100%
+  :border 1px solid #333
+  :background #ddd
   th
     :font-weight normal
     :color #fff
     :background #666
     :text-align left
+    :max-width 200px
   th, td
-    :padding 3px
+    :padding 8px 3px
+    :border 1px solid #333
+  
+  tr.alt-row
+    :background #eee
     
 .row
   :clear both
@@ -181,3 +194,5 @@ table.data-horizontal
         :background #EB938E
         :border 1px solid #881A15
     
+.center
+  :text-align center

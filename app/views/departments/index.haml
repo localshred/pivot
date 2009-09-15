@@ -10,13 +10,14 @@
       %th Contact
       %th Actions
     - @departments.each do |department|
-      %tr.department
-        %td= department.name
+      %tr.department{:id => "department-#{department.id}", :class => alt_row_color}
+        %td
+          %a{:href => "/department/#{department.id}", :title => "Show #{department.name}"}= department.name
         %td= department.contact
         %td
           %a{:href => "/department/#{department.id}/edit", :title => "Edit #{department.name}"} Edit
           or
-          != partial :delete_form_button, :action => "/department/#{department.id}", :id => department.id
+          != partial :"partials/delete_form_button", :action => "/department/#{department.id}", :id => department.id
       
 - else
   No departments found here

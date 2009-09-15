@@ -1,0 +1,6 @@
+Developer.create!(:name => "Eric Shipek", :email => "erics@bidsync.com")
+Developer.create!(:name => "Kevin Dodge", :email => "kevind@bidsync.com")
+Developer.create!(:name => "Jason Barker", :email => "jasonb@bidsync.com")
+Developer.create!(:name => "Brian Goodrich", :email => "briang@bidsync.com")
+Developer.create!(:name => "Ben Matz", :email => "bmatz@bidsync.com")
+Developer.create!(:name => "BJ Neilsen", :email => "bjn@bidsync.com")

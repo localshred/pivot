@@ -3,12 +3,14 @@ class Main
   
   # List active developers
   get "/developers/?" do
-    @developers = Developer.all
+    @developers = Developer.all_sorted
+    @page_title = "Developers"
     haml :"developers/index"
   end
   
   # New developer form
   get "/developer/new/?" do
+    @page_title = "New Developer"
     haml :"developers/new"
   end
   
@@ -26,23 +28,29 @@ class Main
   
   # Show the developer details
   get "/developer/:developer_id/?" do
-    @developer = Developer[params[:developer_id]]
+    @developer = Developer.find params[:developer_id]
+    if @developer.nil?
+      add_error "Could not find developer with id #{params[:developer_id]}"
+      redirect "/developers"
+    end
+    @page_title = "Showing Developer '#{@developer.name}'"
     haml :"developers/show"
   end
   
   # Edit the developer
   get "/developer/:developer_id/edit/?" do
-    @developer = Developer[params[:developer_id]]
+    @developer = Developer.find params[:developer_id]
     if @developer.nil?
       add_error "Could not find the developer with id of #{params[:developer_id]}"
       redirect "/developers"
     end
+    @page_title = "Edit Developer '#{@developer.name}'"
     haml :"developers/edit"
   end
   
   # Update the developer-specific settings
   put "/developer/:developer_id/?" do
-    @developer = Developer[params[:developer_id]]
+    @developer = Developer.find params[:developer_id]
     if @developer.nil?
       add_error "Could not find Developer with id of #{params[:developer_id]}"
     else
@@ -55,7 +63,7 @@ class Main
   end
   
   delete "/developer/:developer_id/?" do
-    @developer = Developer[params[:developer_id]]
+    @developer = Developer.find params[:developer_id]
     if @developer.nil?
       add_error "Could not find Developer with id of #{params[:developer_id]}"
     else

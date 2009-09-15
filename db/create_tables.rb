@@ -1,3 +1,8 @@
+require "activerecord"
+# require "app/models/department"
+# require "app/models/developer"
+# require "app/models/project_meta"
+
 class CreateTables
   def self.up
     begin
@@ -5,13 +10,14 @@ class CreateTables
         # project_meta table
         create_table :project_meta do |t|
           t.integer :project_id, :null => false
+          t.string :name, :null => false
           t.integer :developer_id
           t.integer :department_id
           t.datetime :original_target_date
           t.datetime :current_target_date
           t.integer :num_stories, :default => 0
           t.integer :num_completed_stories, :default => 0
-          t.float :completion_ratio, :default => 0.0
+          t.decimal :completion_ratio, :default => 0.00, :scale => 2
           t.boolean :is_active, :default => 1
         end
         add_index :project_meta, :project_id, :unique => true
@@ -41,9 +47,15 @@ class CreateTables
   end
 
   def self.down
-    drop_table :project_meta
-    drop_table :developers
-    drop_table :departments
+    begin
+      ActiveRecord::Schema.define(:version => 1) do
+        drop_table :project_meta
+        drop_table :developers
+        drop_table :departments
+      end
+    rescue Exception => e
+      puts e
+    end
   end
 
   def self.tables_exist?

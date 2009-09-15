@@ -1,1 +1,28 @@
-.page-title Edit Project #{@project.name}
+.page-title= "Edit '#{@project.name}'"
+
+%form{:action => "/project/#{@project.id}", :method => "post", :name => "edit_project_#{@project.id}"}
+  %input{:type => "hidden", :name => "_method", :value => "put"}
+  .row
+    .label Developer
+    .input
+      != developers_drop_down @project.developer_id
+  .row
+    .label Department
+    .input
+      != departments_drop_down @project.department_id
+  .row
+    .label Original Target Date
+    .input
+      - if @project.original_target_date.nil?
+        %input{:type => "text", :name => "original_target_date", :value => @project.current_target_date}
+      - else
+        != show_date @project.current_target_date
+        (
+        %input{:type => "checkbox", :name => "clear_original_target_date", :value => "1"} Clear
+        )
+  .row
+    .label &nbsp;
+    .input
+      %input{:type => "submit", :name => "submit", :value => "Update Settings"}
+      or
+      %a{:href => "/project/#{@project.id}", :title => "Cancel project edit"} Cancel

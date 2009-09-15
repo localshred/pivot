@@ -10,14 +10,14 @@
       %th Email
       %th Actions
     - @developers.each do |developer|
-      %tr.developer
+      %tr.developer{:id => "developer-#{developer.id}", :class => alt_row_color}
         %td
           %a{:href => "/developer/#{developer.id}", :title => "Show #{developer.name}"}= developer.name
         %td!= show_email(developer)
         %td
           %a{:href => "/developer/#{developer.id}/edit", :title => "Edit #{developer.name}"} Edit
           or
-          != partial :delete_form_button, :action => "/developer/#{developer.id}/delete", :id => developer.id
+          != partial :"partials/delete_form_button", :action => "/developer/#{developer.id}/delete", :id => developer.id
       
 - else
   No developers found here

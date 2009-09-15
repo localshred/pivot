@@ -1,0 +1,35 @@
+%table#project-list.data-horizontal
+  %tr
+    %th Name
+    %th Dev.
+    %th Dept.
+    %th Current
+    %th Completion
+    %th Actions
+  - projects.each do |project|
+    %tr.project{:id => "project-#{project.id}", :class => alt_row_color}
+      %td
+        %a{:href => "/project/#{project.id}", :title => project.name} #{project.name}
+        %a{:href => external_project_link(project), :title => "Project on Pivotal Tracker (External link)", :target => "_blank"} &#x2B00;
+      %td!= link_to_developer(project.developer)
+      %td!= link_to_department(project.department)
+      - if false || !has_stories?(project) || all_stories_completed?(project)
+        %td{:colspan => 2, :class => "center"}
+          - if !has_stories?(project)
+            %span.emphasis No Stories 
+            - unless project.developer.nil?
+              &#151;
+              %a{:href => "mailto:#{project.developer.email}?subject=Provide%20Stories&body=Please%20provide%20stories%20for%20pivotal%20project%20#{project.url}"} Notify
+          - elsif all_stories_completed?(project)
+            .emphasis Completed
+      - else
+        %td!= show_date(project.current_target_date)
+        %td= "#{show_float project.completion_ratio}%"
+      %td
+        %a{:href => "/project/#{project.id}/sync", :title => "Synchronize Project"} Sync
+        |
+        %a{:href => "/project/#{project.id}/edit", :title => "Edit Project Settings"} Edit
+        |
+        %form{:method => "post", :name => " #{archive_action(project.is_active)}_project_#{project.id}", :action => "/project/#{project.id}/#{archive_action(project.is_active)}", :class => "inline-button", :onsubmit => "return confirm(\"Are you sure you would like to #{archive_action(project.is_active)} this project?\");"}
+          %input{:type => "hidden", :name => "_method", :value => "put"}
+          %input{:type => "submit", :value => archive_action(project.is_active).capitalize}

@@ -1,7 +1,7 @@
 !!! Strict
 %html
   %head
-    %title BidSync Project Manager Tool
+    %title= (@page_title || "BidSync Project Manager Tool")+" ~ Pivot"
     %meta{:"http-equiv" => "Content-Type", :content => "text/html; charset=utf-8"}/
     %link{:rel => "stylesheet", :href => "/css/reset.css", :type => "text/css"}/
     %link{:rel => "stylesheet", :href => "/css/main.css", :type => "text/css"}/
@@ -10,7 +10,6 @@
     #wrapper
     
       #header
-        %h1#title BidSync PivotalTracker
         %ul#menu
           %li
             %a{:title => "Projects", :href => "/projects"} Projects
@@ -18,6 +17,10 @@
             %a{:title => "Developers", :href => "/developers"} Developers
           %li
             %a{:title => "Departments", :href => "/departments"} Departments
+          %li
+            %a{:title => "About", :href => "/about"} About
+        
+        %h1#title BidSync PivotalTracker
     
       #content
         #guts

@@ -1,20 +1,13 @@
-.page-title Show Developer
+.context-nav.right
+  %a{:href => "/developer/#{@developer.id}/edit", :title => "Edit #{@developer.name}"} Edit
+  or
+  != partial :"partials/delete_form_button", :action => "/developer/#{@developer.id}/delete", :id => @developer.id
 
-.context-nav.left
-  %a{:href => "/developers", :title => "Back to All Developers"} &laquo; All Developers
+.page-title!= "#{@developer.name} (#{show_email(@developer)})"
+  
+%h3.title Active Projects
 
--if @developer.nil?
-  .clear= "Could not find Developer with id of #{params[:developer_id]}"
--else
-  .context-nav.right
-    %a{:href => "/developer/#{@developer.id}/edit", :title => "Edit #{@developer.name}"} Edit
-    or
-    != partial :delete_form_button, :action => "/developer/#{@developer.id}/delete", :id => @developer.id
-    
-  #developer
-    .row
-      .label Name:
-      .value= @developer.name
-    .row
-      .label Email:
-      .value!= show_email(@developer)
+- unless @developer.active_projects.nil? || @developer.active_projects.empty?
+  != partial :"partials/project_list", :projects => @developer.active_projects
+- else
+  = "No active projects found for #{@developer.first_name}."

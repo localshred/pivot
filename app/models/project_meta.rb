@@ -1,57 +1,78 @@
 class ProjectMeta < ActiveRecord::Base
   set_table_name "project_meta"
+  
   # associations
   belongs_to :developer
   belongs_to :department
   
   # validations
   validates_uniqueness_of :project_id
-  validates_numericality_of :project_id, :developer_id, :department_id, :num_stories, :num_completed_stories
+  validates_presence_of :name
+  validates_numericality_of :project_id
+  validates_numericality_of :developer_id, :department_id, :num_stories, :num_completed_stories, { :allow_nil => true }
   
+  # named scopes
+  named_scope :all_sorted, :order => "name ASC"
+  named_scope :active, :conditions => {:is_active => true}
+  named_scope :inactive, :conditions => {:is_active => false}
+  
+  # static methods
   def self.create_from_project(project)
-    ProjectMeta.create({
-      :project_id => project.id,
-      :num_stories => project.num_stories,
-      :num_completed_stories => project.num_completed_stories
-    })
+    meta = ProjectMeta.new
+    meta.project_id = project.id
+    meta.name = project.name
+    meta.num_stories = project.num_stories
+    meta.num_completed_stories = project.num_completed_stories
+    meta.completion_ratio = ProjectMeta.calculate_ratio(project.num_completed_stories, project.num_stories)
+    meta.current_target_date = project.current_target_date
+    meta.save!
+    meta
   end
   
+  def self.find_local(is_active=nil)
+    case is_active
+    when true
+      ProjectMeta.all_sorted.active
+    when false
+      ProjectMeta.all_sorted.inactive
+    when nil
+      ProjectMeta.all_sorted
+    end
+  end
+  
+  # instance methods
   def developer
-    Developer[developer_id] if !developer_id.nil?
+    Developer.find developer_id if !developer_id.nil?
   end
   
   def department
-    Department[department_id] if !department_id.nil?
-  end
-  
-  # def current_target_date=(project)
-  #   self.current_target_date = project.current_target_date
-  # end
-  # 
-  # def num_stories=(project)
-  #   self.num_stories = project.stories.size
-  # end
-  # 
-  # def num_completed_stories=(project)
-  #   self.num_completed_stories = project.num_completed_stories
-  # end
-  
-  def completion_ratio=(project)
-    self.completion_ratio = 0
-    self.completion_ratio = (project.num_completed_stories/project.num_stories) if num_stories.to_i > 0
+    Department.find department_id if !department_id.nil?
   end
   
   def original_target_date=(date)
-    raise ArgumentError, "Cannot change original target date, it has already been changed"
-    self.original_target_date = date
+    raise ArgumentError, "Cannot change original target date, it has already been changed" unless self.original_target_date.nil?;
+    self[:original_target_date] = date
+  end
+  
+  def reset_original_target_date
+    self[:original_target_date] = nil
   end
   
   def sync(project)
     raise ArgumentError, "Cannot sync with invalid project object" if project.nil? || !project.is_a?(Project)
-    num_stories = project
-    num_completed_stories = project
-    completion_ratio = project
-    current_target_date = project
+    self[:name] = project.name
+    self[:num_stories] = project.stories.size
+    self[:num_completed_stories] = project.num_completed_stories
+    self[:completion_ratio] = ProjectMeta.calculate_ratio(self[:num_completed_stories], self[:num_stories])
+    self[:current_target_date] = project.current_target_date
+    self.save!
+  end
+  
+  def self.calculate_ratio(numerator, divisor)
+    numerator = numerator.to_f if !numerator.is_a?(Float)
+    divisor = divisor.to_f if !divisor.is_a?(Float)
+    result = divisor > 0.0 ? numerator/divisor : 0.0
+    result *= 100 if result <= 1.0
   end
   
 end
