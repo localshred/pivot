@@ -22,12 +22,28 @@
     %tr{:class => alt_row_color}
       %th Department
       %td!= link_to_department(@project.department)
-    %tr{:class => alt_row_color}
-      %th Original Target
-      %td!= show_date(@project.original_target_date)
-    %tr{:class => alt_row_color}
-      %th Current Target
-      %td!= show_date(@project.current_target_date)
-    %tr{:class => alt_row_color}
-      %th Completion
-      %td= "#{@project.num_completed_stories}/#{@project.num_stories} (#{show_float @project.completion_ratio}%)"
+    - if !has_stories?(@project) || all_stories_completed?(@project)
+      %tr
+        %th Original Target
+        %td{:rowspan => 3, :class => "center"}
+          - if !has_stories?(@project)
+            %span.emphasis No Stories 
+            - unless @project.developer.nil?
+              &#151;
+              %a{:href => "mailto:#{@project.developer.email}?subject=Provide%20Stories&body=Please%20provide%20stories%20for%20pivotal%20project%20#{external_project_link(@project)}"} Notify
+          - elsif all_stories_completed?(@project)
+            .emphasis Completed
+      %tr
+        %th Current Target
+      %tr
+        %th Completion
+    - else
+      %tr{:class => alt_row_color}
+        %th Original Target
+        %td!= show_date(@project.original_target_date)
+      %tr{:class => alt_row_color}
+        %th Current Target
+        %td!= show_date(@project.current_target_date)
+      %tr{:class => alt_row_color}
+        %th Completion
+        %td= "#{@project.num_completed_stories}/#{@project.num_stories} (#{show_float @project.completion_ratio}%)"

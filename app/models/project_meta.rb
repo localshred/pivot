@@ -12,7 +12,7 @@ class ProjectMeta < ActiveRecord::Base
   validates_numericality_of :developer_id, :department_id, :num_stories, :num_completed_stories, { :allow_nil => true }
   
   # named scopes
-  named_scope :all_sorted, :order => "name ASC"
+  named_scope :all_sorted, :order => "current_target_date ASC, name ASC"
   named_scope :active, :conditions => {:is_active => true}
   named_scope :inactive, :conditions => {:is_active => false}
   
@@ -47,15 +47,6 @@ class ProjectMeta < ActiveRecord::Base
   
   def department
     Department.find department_id if !department_id.nil?
-  end
-  
-  def original_target_date=(date)
-    raise ArgumentError, "Cannot change original target date, it has already been changed" unless self.original_target_date.nil?;
-    self[:original_target_date] = date
-  end
-  
-  def reset_original_target_date
-    self[:original_target_date] = nil
   end
   
   def sync(project)

@@ -6,6 +6,8 @@
 
 - unless @projects.nil? || @projects.empty?
   .context-nav.right
+    %a{:href => "http://www.pivotaltracker.com/dashboard", :title => "New Project on Pivotal", :target => "_blank"} New
+    |
     - if @archive_view
       %a{:href => "/projects", :title => "Show Active Projects"} Active
     - else

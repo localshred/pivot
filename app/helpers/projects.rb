@@ -1,7 +1,7 @@
 class Main
   helpers do
     
-    def show_date(datetime)
+    def show_date(datetime, warn_date_is_past=true)
       if (datetime.nil?)
         haml "%span.emphasis none", :layout => false
       else
@@ -13,7 +13,8 @@ class Main
           raise ArgumentError, "Invalid object passed to show_date"
         end
         full_date = datetime.strftime("%m.%d.%Y")
-        haml "%span{:title => \"#{full_date}\"} #{nice_date(datetime)}", :layout => false
+        @warn = (warn_date_is_past && Date.today > datetime.to_date)
+        haml "%span{:title => \"#{full_date}\", :class => \"#{@warn ? "warn" : ""}\"} #{nice_date(datetime)}", :layout => false
       end
     end
     

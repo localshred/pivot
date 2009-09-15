@@ -62,11 +62,8 @@ class Main
     unless @project.nil?
       @project.developer_id = params[:developer_id]
       @project.department_id = params[:department_id]
-      if params.include?("original_target_date") && !params["original_target_date"].strip.empty?
-        @project.original_target_date = params[:original_target_date]
-      elsif params.include?("clear_original_target_date")
-        @project.reset_original_target_date
-      end
+      @project.original_target_date = nil if params.include?("clear_original_target_date")
+      @project.original_target_date = params[:original_target_date].strip unless !params.include?("original_target_date") || params["original_target_date"].strip.empty?
       @project.save!
       add_message "Successfully updated project settings."
     else
