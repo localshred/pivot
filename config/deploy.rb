@@ -1,13 +1,14 @@
-set :user, "deployer"
-set :password, "deployerpassword"
-set :ssh_options, { :forward_agent => true }
 set :application, "pivot"
 set :domain,      "rog.bidsync.com"
 set :repository,  "/opt/gitrepo/#{application}.git"
 set :use_sudo,    false
 set :deploy_to,   "/var/www/#{application}"
+
 set :scm,         "git"
 set :branch,      "master"
+set :user, "pivot"
+set :password, "quD30Tx55Ehu"
+set :ssh_options, { :forward_agent => true }
 
 role :app, domain
 role :web, domain
@@ -30,24 +31,27 @@ namespace :deploy do
   end
 end
 
+after("deploy:cold", "db:create")
+after("db:create", "db:seed")
+
 namespace :db do
   desc "Create the db tables"
   task :create, :roles => :db do
-    run "thor db:create"
+    run "cd #{current_release}; thor db:create"
   end
   
   desc "Drop the db tables"
   task :drop, :roles => :db do
-    run "thor db:drop"
+    run "cd #{current_release}; thor db:drop"
   end
   
   desc "Reload the db tables"
   task :reload, :roles => :db do
-    run "thor db:reload"
+    run "cd #{current_release}; thor db:reload"
   end
   
   desc "Seed the db tables"
   task :seed, :roles => :db do
-    run "thor db:seed"
+    run "cd #{current_release}; thor db:seed"
   end
 end
