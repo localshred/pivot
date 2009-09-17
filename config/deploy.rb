@@ -38,16 +38,27 @@ namespace :deploy do
 end
 
 namespace :app do
+  desc "Create the app-specific folders in shared"
+  task :setup, :roles => :app do
+    run "cd #{shared_path}; if [ ! -d 'config' ]; then mkdir -p config; fi;"
+  end
+  
   desc "Copy the example settings.yml to the real thing"
   task :copy_settings, :roles => :app do
-    run "cd #{current_release}/config; cp settings.example.yml settings.yml;"
+    run "cd #{current_release}/config; cp settings.example.yml #{shared_path}/config/settings.yml" # copy the config file to shared
+    run "ln -s #{shared_path}/config/settings.yml #{current_release}/config/settings.yml" # create a symlink to current
   end
 end
 
 namespace :db do
+  desc "Setup the shared database"
+  task :setup, :roles =>:db do
+    run "cd #{shared_path}; if [ ! -d 'db/sqlite/' ]; then mkdir -p db/sqlite; fi;"
+  end
+  
   desc "Create the db tables"
   task :create, :roles => :db do
-    run "cd #{current_release}; thor db:create"
+    run "thor db:create" # create the db folder if it doesn't exist
   end
   
   desc "Drop the db tables"
@@ -67,4 +78,15 @@ namespace :db do
 end
 
 # HOOKS
-after("deploy:cold", ["app:copy_settings","db:create"])
+after "deploy:setup" do
+  app.setup
+  db.setup
+end
+
+after "deploy:cold" do
+  db.create
+end
+
+after "deploy:update" do
+  app.copy_settings
+end

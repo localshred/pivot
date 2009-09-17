@@ -13,3 +13,5 @@ defaults: &defaults
 
 :production:
   <<: *defaults
+  :active_record:
+    :database: "../../shared/db/sqlite/pivot.db"
