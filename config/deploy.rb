@@ -1,14 +1,16 @@
 set :application, "pivot"
 set :domain,      "rog.bidsync.com"
-set :repository,  "/opt/gitrepo/#{application}.git"
-set :use_sudo,    false
-set :deploy_to,   "/var/www/#{application}"
 
 set :scm,         "git"
 set :branch,      "master"
-set :user, "pivot"
-set :password, "quD30Tx55Ehu"
-set :ssh_options, { :forward_agent => true }
+
+set :user,        "pivot"
+set :password,    "quD30Tx55Ehu"
+set :use_sudo,    false
+
+set :local_repository,  "#{user}@#{domain}:/opt/gitrepo/#{application}.git"
+set :repository,  "file:///opt/gitrepo/#{application}.git"
+set :deploy_to,   "/var/www/#{application}"
 
 role :app, domain
 role :web, domain
@@ -29,10 +31,18 @@ namespace :deploy do
   task :restart, :roles => :app do
     run "touch #{current_release}/tmp/restart.txt"
   end
+  
+  task :migrate, :roles => :db do
+    # Do nothing, hooks will handle this later
+  end
 end
 
-after("deploy:cold", "db:create")
-after("db:create", "db:seed")
+namespace :app do
+  desc "Copy the example settings.yml to the real thing"
+  task :copy_settings, :roles => :app do
+    run "cd #{current_release}/config; cp settings.example.yml settings.yml;"
+  end
+end
 
 namespace :db do
   desc "Create the db tables"
@@ -55,3 +65,6 @@ namespace :db do
     run "cd #{current_release}; thor db:seed"
   end
 end
+
+# HOOKS
+after("deploy:cold", ["app:copy_settings","db:create"])

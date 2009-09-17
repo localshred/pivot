@@ -77,6 +77,7 @@ class DB < Thor
       load_db(env) unless @db_loaded
       if !CreateTables.tables_exist?
         CreateTables.up
+        seed(env)
       else
         raise Exception, "Database tables already exist!"
       end
