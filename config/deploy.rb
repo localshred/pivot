@@ -58,7 +58,7 @@ namespace :db do
   
   desc "Create the db tables"
   task :create, :roles => :db do
-    run "thor db:create" # create the db folder if it doesn't exist
+    run "cd #{current_release}; thor db:create" # create the db folder if it doesn't exist
   end
   
   desc "Drop the db tables"
