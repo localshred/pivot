@@ -8,7 +8,7 @@ class Project
   def initialize(options = {})
     if options.include?(:project_id)
       @id      = options[:project_id]
-      @token   = options[:token].to_s || CONFIG[:api_token]
+      @token   = options[:token].to_s
       @api_url = "#{CONFIG[:api_location]}/projects/#{@id}"
       @url     = "#{CONFIG[:site_location]}/projects/#{@id}"
       @project = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))

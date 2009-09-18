@@ -1,3 +1,5 @@
+require "cgi"
+
 class Main
   helpers do
 
@@ -20,6 +22,19 @@ class Main
     def developers_drop_down(option_to_select=nil)
       developers = Developer.all_sorted.map{|developer| {:key => developer.id, :value => developer.name} }
       drop_down :collection => developers, :name => "developer_id", :select => option_to_select
+    end
+    
+    def notify_developer_link(project)
+      params = {
+        "subject" => "Provide Stories for Project",
+        "body" => "Please provide stories for pivotal project #{external_project_link(@project)}"
+      }
+      query_string = params.each.map{|key, val| "#{key}=#{CGI::escape(val)}" }.join("&")
+      haml "%a{:href => \"mailto:#{@project.developer.email}?#{query_string}\", :title => \"Notify Developer to provide stories for project\"} Notify Developer", :layout => false
+    end
+    
+    def user_is_dev?(developer)
+      !developer.nil? && !developer.email.nil? && !current_user.nil? && developer.email == current_user[:username]
     end
     
   end

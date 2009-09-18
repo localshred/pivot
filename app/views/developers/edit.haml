@@ -16,3 +16,7 @@
       %input{:type => "submit", :name => "submit", :value => "Update Information"}
       or
       %a{:href => "/developers", :title => "Cancel developer edit"} Cancel
+
+- if user_is_dev?(@developer)
+  %hr
+  %h3.warn.clear Warning: You are currently logged in as this user. If you change the username, you will need to update your PivotalTracker account to reflect the same email address. You will also be logged out of this tool.

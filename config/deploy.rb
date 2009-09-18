@@ -17,6 +17,7 @@ role :web, domain
 role :db,  domain, :primary => true
 
 namespace :deploy do
+  
   desc "Start the application server"
   task :start, :roles => :app do
     run "touch #{current_release}/tmp/restart.txt"
@@ -35,9 +36,11 @@ namespace :deploy do
   task :migrate, :roles => :db do
     # Do nothing, hooks will handle this later
   end
+  
 end
 
 namespace :app do
+  
   desc "Create the app-specific folders in shared"
   task :setup, :roles => :app do
     run "cd #{shared_path}; if [ ! -d 'config' ]; then mkdir -p config; fi;"
@@ -48,9 +51,63 @@ namespace :app do
     run "cd #{current_release}/config; cp settings.example.yml #{shared_path}/config/settings.yml" # copy the config file to shared
     run "ln -s #{shared_path}/config/settings.yml #{current_release}/config/settings.yml" # create a symlink to current
   end
+  
+  desc "Upload the settings file"
+  task :upload_settings, :roles => :app do
+    upload "config/settings.yml", "#{shared_path}/config/settings.yml", :via => :scp
+  end
+
+  namespace :apache do
+
+    task :default, :roles => :app do
+      processes
+    end
+
+    desc "Check Apache processes"
+    task :ps, :roles => :app do
+      puts "Apache processes:"
+      run "ps aux | grep -i apache" do |channel, stream, data|; puts data; end
+    end
+
+    desc "Test Apache configuration"
+    task :test_config, :roles => :app do
+      puts "Testing apache configuration..."
+      run "apache2ctl -t" do |channel, stream, data|; puts data; end
+    end
+
+    desc "Test Apache configuration"
+    task :vhosts, :roles => :app do
+      puts "Apache Vhosts:"
+      run "apache2ctl -t -D DUMP_VHOSTS" do |channel, stream, data|; puts data; end
+    end
+
+  end
+
+  namespace :passenger do
+
+    task :default, :roles => :app do
+      processes
+      memory
+    end
+
+    desc "Check Passenger processes"
+    task :ps, :roles => :app do
+      puts "Passenger processes:"
+      run "ps aux | grep -i passenger" do |channel, stream, data|; puts data; end
+    end
+
+    desc "Check Passenger memory stats"
+    task :memory, :roles => :app do
+      puts "Passenger Stats:"
+      run "passenger-memory-stats" do |channel, stream, data|; puts data; end
+    end
+
+  end
+
 end
 
 namespace :db do
+  
   desc "Setup the shared database"
   task :setup, :roles =>:db do
     run "cd #{shared_path}; if [ ! -d 'db/sqlite/' ]; then mkdir -p db/sqlite; fi;"
@@ -75,6 +132,12 @@ namespace :db do
   task :seed, :roles => :db do
     run "cd #{current_release}; thor db:seed"
   end
+  
+  desc "Symlink the database from shared to current"
+  task :create_symlink, :roles => :db do
+    run "cd #{current_release}/db; ln -s #{shared_path}/db/sqlite"
+  end
+  
 end
 
 # HOOKS
@@ -83,10 +146,11 @@ after "deploy:setup" do
   db.setup
 end
 
-after "deploy:cold" do
-  db.create
-end
-
 after "deploy:update" do
   app.copy_settings
+  db.create_symlink
+end
+
+after "deploy:cold" do
+  db.create
 end

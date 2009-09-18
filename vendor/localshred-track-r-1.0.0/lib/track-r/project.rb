@@ -5,11 +5,13 @@ class Project
   attr_reader :name, :iteration_length, :id, :week_start_day, :point_scale, :api_url, :url, :token, :meta
   
   def initialize(options = {})
-    @token   = options[:token] || Token.new
-    if options.include?(:project_id)
+    if options.include?(:project_id) && options.include?(:token)
+      @token   = options[:token]
       @id      = options[:project_id]
       @api_url = "#{CONFIG[:api_location]}/projects/#{@id}"
       @url     = "#{CONFIG[:site_location]}/projects/#{@id}"
+      puts "+++@api_url = #{@api_url}"
+      puts "+++@token.to_s = #{@token.to_s}"
       @project = Hpricot(open(@api_url, {"X-TrackerToken" => @token.to_s}))
       @stories = nil
     elsif options.include?(:project)
@@ -112,7 +114,7 @@ class Project
   
   def get_stories
     api_url = "#{CONFIG[:api_location]}/projects/#{@id}/stories"
-    @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id)}
+    @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token.to_s)}
   end
   
   def init_meta

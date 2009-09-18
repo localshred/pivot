@@ -10,12 +10,16 @@ class Main
   
   # New developer form
   get "/developer/new/?" do
+    deny_access unless has_role? :admin
+    
     @page_title = "New Developer"
     haml :"developers/new"
   end
   
   # Create the new developer from the post, redirect to show
   post "/developer/?" do
+    deny_access unless has_role? :admin
+    
     @developer = Developer.create(:name => params[:name], :email => params[:email], :is_active => true)
     if !@developer.errors.empty?
       @developer.errors.each {|error| add_error("Please provide a value for #{error}") }
@@ -39,11 +43,15 @@ class Main
   
   # Edit the developer
   get "/developer/:developer_id/edit/?" do
+    
     @developer = Developer.find params[:developer_id]
     if @developer.nil?
       add_error "Could not find the developer with id of #{params[:developer_id]}"
       redirect "/developers"
     end
+    
+    deny_access unless has_role?(:admin) || user_is_dev?(@developer)
+    
     @page_title = "Edit Developer '#{@developer.name}'"
     haml :"developers/edit"
   end
@@ -54,15 +62,26 @@ class Main
     if @developer.nil?
       add_error "Could not find Developer with id of #{params[:developer_id]}"
     else
-      @developer.name = params[:name]
-      @developer.email = params[:email]
+      deny_access unless has_role?(:admin) || user_is_dev?(@developer)
+      
+      email_changed = (@developer.email != params[:email].strip)
+      @developer.name = params[:name].strip
+      @developer.email = params[:email].strip
       @developer.save
       add_message "Successfully updated developer details for #{@developer.name}"
+      
+      if email_changed && user_is_dev?(@developer)
+        logout_user
+        add_message "You have been logged out because you changed your username (email). Please login again."
+        redirect "/login"
+      end
     end
     redirect "/developer/#{params[:developer_id]}"
   end
   
   delete "/developer/:developer_id/?" do
+    deny_access unless has_role? :admin
+    
     @developer = Developer.find params[:developer_id]
     if @developer.nil?
       add_error "Could not find Developer with id of #{params[:developer_id]}"

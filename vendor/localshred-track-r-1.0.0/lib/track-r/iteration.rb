@@ -2,8 +2,8 @@ class Iteration
   attr_reader :id, :project_id, :number, :type, :start_date, :finish_date, :stories, :limit, :offset, :token
   
   def self.find(options={})
-    @token = options[:token] || Token.new
-    if options.include?(:project_id)
+    if options.include?(:project_id) && options.include?(:token)
+      @token = options[:token] || Token.new
       @project_id = options[:project_id]
       api_url = "#{CONFIG[:api_location]}/projects/#{@project_id}/iterations/#{options.include?(:type) ? options[:type] : ""}"
       iterations = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/'iteration').map do |iteration|
@@ -13,8 +13,8 @@ class Iteration
   end
   
   def initialize(options={})
-    @token = options[:token] || Token.new
-    if options.include?(:project_id) && options.include?(:iteration_id)
+    if options.include?(:project_id) && options.include?(:iteration_id) && options.include?(:token)
+      @token = options[:token]
       @id         = options[:iteration_id]
       @project_id = options[:project_id]
       @number     = options[:number]
@@ -27,7 +27,7 @@ class Iteration
       @project_id = options[:project_id]
       @iteration  = options[:iteration]
     else
-      raise ArgumentError, "Valid options are: :iteration (receives an Hpricot Object) + :project_id OR :project_id + :iteration_id"
+      raise ArgumentError, "Valid options are: :iteration (receives an Hpricot Object) + :project_id OR :project_id + :iteration_id + :token"
     end
     build_iteration
   end

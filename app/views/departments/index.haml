@@ -1,23 +1,26 @@
 .page-title Departments
 
-.context-nav.right
-  %a{:href => "/department/new", :title => "Create Department"} + New Department
+- if has_role? :admin
+  .context-nav.right
+    %a{:href => "/department/new", :title => "Create Department"} + New Department
   
 - if !@departments.empty?
   %table#department-list.data-horizontal
     %tr
       %th Name
       %th Contact
-      %th Actions
+      - if has_role? :admin
+        %th Actions
     - @departments.each do |department|
       %tr.department{:id => "department-#{department.id}", :class => alt_row_color}
         %td
           %a{:href => "/department/#{department.id}", :title => "Show #{department.name}"}= department.name
         %td= department.contact
-        %td
-          %a{:href => "/department/#{department.id}/edit", :title => "Edit #{department.name}"} Edit
-          or
-          != partial :"partials/delete_form_button", :action => "/department/#{department.id}", :id => department.id
+        - if has_role? :admin
+          %td
+            %a{:href => "/department/#{department.id}/edit", :title => "Edit #{department.name}"} Edit
+            or
+            != partial :"partials/delete_form_button", :action => "/department/#{department.id}", :id => department.id
       
 - else
   No departments found here

@@ -38,6 +38,9 @@ class Main
        "http://www.pivotaltracker.com/projects/#{project.project_id}"
     end
     
+    def user_leads_project?(project)
+      !project.nil? && !project.developer.nil? && !current_user.nil? && project.developer.email == current_user[:username]
+    end
     
   end
 end

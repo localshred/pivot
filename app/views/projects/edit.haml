@@ -18,7 +18,7 @@
         (
         %a{:href => "javascript:void(0);", :onclick => "$('input[name=original_target_date]').val('');", :title => "Clear Original Date"} Clear
         ,
-        %a{:href => "javascript:void(0);", :onclick => "$('input[name=original_target_date]').val('#{@project.current_target_date.strftime("%m/%d/%Y")}');", :title => "Reset to Original Date"} Original
+        %a{:href => "javascript:void(0);", :onclick => "$('input[name=original_target_date]').val('#{@project.current_target_date.strftime("%m/%d/%Y")}');", :title => "Reset to Original Date"} Current
         )
       - unless @project.original_target_date.nil?
         #original-date-display

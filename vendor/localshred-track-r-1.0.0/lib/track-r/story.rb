@@ -7,8 +7,8 @@ class Story
   attr_reader :id, :url
   
   def initialize(options = {})
-    @token      = options[:token].to_s || Token.new
-    if options.include?(:project_id) && options.include?(:story_id)
+    if options.include?(:project_id) && options.include?(:story_id) && options.include?(:token)
+      @token      = options[:token].to_s
       @id         = options[:story_id]
       @project_id = options[:project_id]
       @url        = "http://www.pivotaltracker.com/story/show/#{@id}"

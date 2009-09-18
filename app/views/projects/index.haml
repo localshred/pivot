@@ -12,8 +12,9 @@
       %a{:href => "/projects", :title => "Show Active Projects"} Active
     - else
       %a{:href => "/projects/archive", :title => "Show Archived Projects"} Archived
-    |
-    %a{:href => "/projects/sync", :title => "Synchronize New Projects"} Sync
+    - if has_role? :admin
+      |
+      %a{:href => "/projects/sync", :title => "Synchronize New Projects"} Sync
   
   != partial :"partials/project_list", :projects => @projects
 
@@ -21,13 +22,15 @@
   
   .actions.clear
     At this point you could 
+    - if has_role? :admin
+      %a{:href => "/projects/sync", :title => "Synchronize with the API"} Synchronize with Pivotal
+      ,
+    view 
     - if @archive_view
-      %a{:href => "/projects", :title => "Show Active Projects"} Check Active Projects
+      %a{:href => "/projects", :title => "Show Active Projects"} Active Projects
     - else
-      %a{:href => "/projects/archive", :title => "Show Archived Projects"} Check Archived Projects
-    ,
-    %a{:href => "/projects/sync", :title => "Synchronize with the API"} Synchronize with Pivotal
-    or
-    %a{:href => "http://www.pivotaltracker.com", :title => "Go see what went wrong", :target => "_blank"} Go to PivotalTracker.com &#x2B00;
+      %a{:href => "/projects/archive", :title => "Show Archived Projects"} Archived Projects
+    or go to 
+    %a{:href => "http://www.pivotaltracker.com", :title => "Go see what went wrong", :target => "_blank"} PivotalTracker.com &#x2B00;
     \.
     

@@ -2,6 +2,7 @@
 class Main
   
   # List active Projects
+  # Keep in mind that the route / should be a "safe zone" where roles aren't required (other than login).
   ["/", "/projects/?", "/projects/archive/?"].each do |path|
     get path do
       # Filter the projects based on active status and archive_view
@@ -15,8 +16,11 @@ class Main
   
   # Synchronize all projects (get all new)
   get "/projects/sync/?" do
+    deny_access unless has_role? :admin
+    
     @page_title = "Synchronizing with Pivotal API..."
     tracker.projects
+    
     add_message "Successfully synced new projects from the API."
     redirect "/projects"
   end
@@ -26,7 +30,9 @@ class Main
     @page_title = "Synchronizing with Pivotal API..."
     @project = ProjectMeta.find params[:project_meta_id]
     unless @project.nil?
-      Tracker.new.project @project.project_id
+      deny_access(false) unless has_role?(:admin) || user_leads_project?(@project)
+      
+      tracker.project @project.project_id
       add_message "Successfully synced project #{params[:project_meta_id]} with the API."
       redirect "/project/#{params[:project_meta_id]}"
     else
@@ -52,6 +58,9 @@ class Main
       add_error "Could not find that project"
       redirect "/projects"
     end
+    
+    deny_access unless has_role?(:admin) || user_leads_project?(@project)
+    
     @page_title = "Edit Project '#{@project.name}'"
     haml :"projects/edit";
   end
@@ -60,6 +69,8 @@ class Main
   put "/project/:project_meta_id/?" do
     @project = ProjectMeta.find params[:project_meta_id]
     unless @project.nil?
+      deny_access unless has_role?(:admin) || user_leads_project?(@project)
+      
       @project.developer_id = params[:developer_id]
       @project.department_id = params[:department_id]
       @project.original_target_date = nil if params.include?("clear_original_target_date")
@@ -69,10 +80,14 @@ class Main
     else
       add_error "Could not find project #{params[:project_meta_id]}"
     end
+    
     redirect "/project/#{@project.id}"
   end
   
+  # Archive the project
   put "/project/:project_meta_id/archive/?" do
+    deny_access unless has_role? :admin
+    
     @project = ProjectMeta.find params[:project_meta_id]
     unless @project.nil?
       @project.is_active = false
@@ -84,7 +99,10 @@ class Main
     end
   end
   
+  # Unarchive the project
   put "/project/:project_meta_id/unarchive/?" do
+    deny_access unless has_role? :admin
+    
     @project = ProjectMeta.find params[:project_meta_id]
     unless @project.nil?
       @project.is_active = true

@@ -19,19 +19,22 @@
           - if !has_stories?(project)
             %span.emphasis No Stories 
             - unless project.developer.nil?
-              &#151;
-              %a{:href => "mailto:#{project.developer.email}?subject=Provide%20Stories&body=Please%20provide%20stories%20for%20pivotal%20project%20#{external_project_link(project)}"} Notify
+              != "&#151; #{notify_developer_link(project)}"
           - elsif all_stories_completed?(project)
             .emphasis Completed
       - else
         %td!= show_date(project.original_target_date)
         %td!= show_date(project.current_target_date)
         %td= "#{show_float project.completion_ratio}%"
-      %td
-        %a{:href => "/project/#{project.id}/sync", :title => "Synchronize Project"} Sync
-        |
-        %a{:href => "/project/#{project.id}/edit", :title => "Edit Project Settings"} Edit
-        |
-        %form{:method => "post", :name => " #{archive_action(project.is_active)}_project_#{project.id}", :action => "/project/#{project.id}/#{archive_action(project.is_active)}", :class => "inline-button", :onsubmit => "return confirm(\"Are you sure you would like to #{archive_action(project.is_active)} this project?\");"}
-          %input{:type => "hidden", :name => "_method", :value => "put"}
-          %input{:type => "submit", :value => archive_action(project.is_active).capitalize}
+        %td
+          - if has_role?(:admin) || user_leads_project?(project)
+            %a{:href => "/project/#{project.id}/sync", :title => "Synchronize Project"} Sync
+            -if has_role? :admin
+              |
+              %a{:href => "/project/#{project.id}/edit", :title => "Edit Project Settings"} Edit
+              |
+              %form{:method => "post", :name => " #{archive_action(project.is_active)}_project_#{project.id}", :action => "/project/#{project.id}/#{archive_action(project.is_active)}", :class => "inline-button", :onsubmit => "return confirm(\"Are you sure you would like to #{archive_action(project.is_active)} this project?\");"}
+                %input{:type => "hidden", :name => "_method", :value => "put"}
+                %input{:type => "submit", :value => archive_action(project.is_active).capitalize}
+          - else
+            %span.emphasis No Actions

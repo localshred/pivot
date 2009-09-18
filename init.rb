@@ -22,7 +22,7 @@ class Main < Monk::Glue
   use Rack::Session::Cookie
   
   configure :development do
-    ActiveRecord::Base.logger = Logger.new(STDERR)
+    # ActiveRecord::Base.logger = Logger.new(STDERR)
   end
   
   configure :production do

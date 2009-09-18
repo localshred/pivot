@@ -14,7 +14,7 @@ class Tracker
   # Fetches project with given ID
   # Returns a Project object
   def project(project_id)
-    @project = Project.new(:project_id => project_id)
+    @project = Project.new(:project_id => project_id, :token => @token.to_s)
   end
 
   # Refresh the projects from the server
@@ -38,11 +38,11 @@ class Tracker
     end
   end
 
-  # Uses the ProjectMeta model to find locally stored projects and their api counterparts
-  def self.find_local(is_active=nil)
-    local = ProjectMeta.find_local(is_active)
-    local.map{|meta| Tracker.new.find_project{|project| puts "+++#{meta.project_id} == #{project.id}"; meta.project_id == project.id } } unless local.nil? || local.empty?
-  end
+  # # Uses the ProjectMeta model to find locally stored projects and their api counterparts
+  # def self.find_local(is_active=nil)
+  #   local = ProjectMeta.find_local(is_active)
+  #   local.map{|meta| Tracker.new.find_project{|project| puts "+++#{meta.project_id} == #{project.id}"; meta.project_id == project.id } } unless local.nil? || local.empty?
+  # end
   
   protected
 
@@ -50,7 +50,7 @@ class Tracker
   # Returns an Array stored in @projects
   def get_projects
     api_url = "#{CONFIG[:api_location]}/projects/"
-    @projects ||= (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:project).map {|project| Project.new(:project => project)}
+    @projects ||= (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:project).map {|project| Project.new(:project => project, :token => @token.to_s)}
   end
 
 end # class Tracker::Tracker

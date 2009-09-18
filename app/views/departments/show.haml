@@ -1,7 +1,8 @@
-.context-nav.right
-  %a{:href => "/department/#{@department.id}/edit", :title => "Edit #{@department.name}"} Edit
-  or
-  != partial :"partials/delete_form_button", :action => "/department/#{@department.id}", :id => @department.id
+- if has_role? :admin
+  .context-nav.right
+    %a{:href => "/department/#{@department.id}/edit", :title => "Edit #{@department.name}"} Edit
+    or
+    != partial :"partials/delete_form_button", :action => "/department/#{@department.id}", :id => @department.id
 
 .page-title!= "#{@department.name} (#{@department.contact})"
   
@@ -11,3 +12,12 @@
   != partial :"partials/project_list", :projects => @department.active_projects
 - else
   = "No active projects found for #{@department.name}."
+
+%hr
+
+%h3.title Archived Projects
+
+- unless @department.archived_projects.nil? || @department.archived_projects.empty?
+  != partial :"partials/project_list", :projects => @department.archived_projects
+- else
+  = "No archived projects found for #{@department.name}."

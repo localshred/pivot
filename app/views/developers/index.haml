@@ -1,7 +1,8 @@
 .page-title Developers
 
-.context-nav.right
-  %a{:href => "/developer/new", :title => "Create Developer"} + New Developer
+- if has_role? :admin
+  .context-nav.right
+    %a{:href => "/developer/new", :title => "Create Developer"} + New Developer
 
 - if !@developers.empty?
   %table#developer-list.data-horizontal
@@ -15,9 +16,13 @@
           %a{:href => "/developer/#{developer.id}", :title => "Show #{developer.name}"}= developer.name
         %td!= show_email(developer)
         %td
-          %a{:href => "/developer/#{developer.id}/edit", :title => "Edit #{developer.name}"} Edit
-          or
-          != partial :"partials/delete_form_button", :action => "/developer/#{developer.id}", :id => developer.id
+          - if has_role?(:admin) || user_is_dev?(developer)
+            %a{:href => "/developer/#{developer.id}/edit", :title => "Edit #{developer.name}"} Edit
+            - if has_role?(:admin)
+              or
+              != partial :"partials/delete_form_button", :action => "/developer/#{developer.id}", :id => developer.id
+          - else
+            %span.emphasis No Actions
       
 - else
   No developers found here

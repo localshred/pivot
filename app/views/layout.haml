@@ -13,14 +13,23 @@
     
       #header
         %ul#menu
-          %li
-            %a{:title => "Projects", :href => "/projects"} Projects
-          %li
-            %a{:title => "Developers", :href => "/developers"} Developers
-          %li
-            %a{:title => "Departments", :href => "/departments"} Departments
-          %li
-            %a{:title => "About", :href => "/about"} About
+          - if logged_in?
+            %li
+              %a{:title => "Projects", :href => "/projects"} Projects
+            %li
+              %a{:title => "Developers", :href => "/developers"} Developers
+            %li
+              %a{:title => "Departments", :href => "/departments"} Departments
+            %li
+              %a{:title => "About", :href => "/about"} About
+            %li
+              %a{:title => "Logout", :href => "/logout"} Logout
+          -else
+            %li
+              %a{:title => "About", :href => "/about"} About
+            %li
+              %a{:title => "Login", :href => "/login"} Login
+          
         
         %h1#title BidSync PivotalTracker
     
