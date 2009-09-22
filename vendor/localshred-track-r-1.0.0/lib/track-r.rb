@@ -7,7 +7,6 @@ require 'track-r/token'
 require 'track-r/tracker'
 require 'cgi'
 require 'net/http'
-require 'curb'
 require 'timeout'
 
 # Load configuration globals
