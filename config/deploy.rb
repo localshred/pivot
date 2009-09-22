@@ -56,6 +56,19 @@ namespace :app do
   task :upload_settings, :roles => :app do
     upload "config/settings.yml", "#{shared_path}/config/settings.yml", :via => :scp
   end
+  
+  desc "tail production log files" 
+  task :tail_logs, :roles => :app do
+    begin
+      run "tail -f #{shared_path}/log/server.log" do |channel, stream, data|
+        puts  # for an extra line break before the host name
+        puts "#{channel[:host]}: #{data}" 
+        break if stream == :err
+      end
+    rescue
+      # silently ignore the Interrupt
+    end
+  end
 
   namespace :apache do
 

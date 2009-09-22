@@ -23,6 +23,8 @@ class Main
         diff = (old_date - Date.today).to_i
       end
       
+      puts "diff = #{diff}"
+      
       if diff == 0
         result = 'Today'
         singular = true
@@ -31,14 +33,20 @@ class Main
         singular = true
       elsif diff <= 7
         result = "#{diff} days"
-      elsif diff <= 30
+      elsif diff <= 28
         result = "#{(diff/7).to_i} weeks"
       elsif diff <= 365
-        result = "#{(diff/12).to_i} months"
+        num_months = (diff/30).to_i
+        if (diff%30) > 0
+          num_months = Float(num_months)
+          num_months += (Float(diff)%Float(30))/Float(30)
+          num_months = sprintf("%.1f", num_months)
+        end
+        result = "#{num_months} months"
       elsif diff > 365
         result = "#{(diff/365).to_i}+ years"
       end
-      result = past && !singular ? result+" ago" : "in "+result
+      result = (singular ? result : (past ? result+" ago" : "in "+result))
     end
     
     def show_float(float, prec=2)
