@@ -29,9 +29,10 @@ class Main
       # Attempt to get an api token with the credentials
       begin
         token = Token.new(user_options)
-      rescue OpenURI::HTTPError => e
+      rescue Exception => e
         add_error "Authentication failed. Please try again."
         redirect "/login"
+        puts "Auth failed! -> #{e.message}"
         return # ensure no weirdness
       end
       

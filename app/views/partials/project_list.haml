@@ -26,15 +26,15 @@
         %td!= show_date(project.original_target_date)
         %td!= show_date(project.current_target_date)
         %td= "#{show_float project.completion_ratio}%"
-        %td
-          - if has_role?(:admin) || user_leads_project?(project)
-            %a{:href => "/project/#{project.id}/sync", :title => "Synchronize Project"} Sync
-            -if has_role? :admin
-              |
-              %a{:href => "/project/#{project.id}/edit", :title => "Edit Project Settings"} Edit
-              |
-              %form{:method => "post", :name => " #{archive_action(project.is_active)}_project_#{project.id}", :action => "/project/#{project.id}/#{archive_action(project.is_active)}", :class => "inline-button", :onsubmit => "return confirm(\"Are you sure you would like to #{archive_action(project.is_active)} this project?\");"}
-                %input{:type => "hidden", :name => "_method", :value => "put"}
-                %input{:type => "submit", :value => archive_action(project.is_active).capitalize}
-          - else
-            %span.emphasis No Actions
+      %td
+        - if has_role?(:admin) || user_leads_project?(project)
+          %a{:href => "/project/#{project.id}/sync", :title => "Synchronize Project"} Sync
+          -if has_role? :admin
+            |
+            %a{:href => "/project/#{project.id}/edit", :title => "Edit Project Settings"} Edit
+            |
+            %form{:method => "post", :name => " #{archive_action(project.is_active)}_project_#{project.id}", :action => "/project/#{project.id}/#{archive_action(project.is_active)}", :class => "inline-button", :onsubmit => "return confirm(\"Are you sure you would like to #{archive_action(project.is_active)} this project?\");"}
+              %input{:type => "hidden", :name => "_method", :value => "put"}
+              %input{:type => "submit", :value => archive_action(project.is_active).capitalize}
+        - else
+          %span.emphasis No Actions

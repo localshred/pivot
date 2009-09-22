@@ -52,7 +52,7 @@ class ProjectMeta < ActiveRecord::Base
   def sync(project)
     raise ArgumentError, "Cannot sync with invalid project object" if project.nil? || !project.is_a?(Project)
     self[:name] = project.name
-    self[:num_stories] = project.stories.size
+    self[:num_stories] = project.num_stories
     self[:num_completed_stories] = project.num_completed_stories
     self[:completion_ratio] = ProjectMeta.calculate_ratio(self[:num_completed_stories], self[:num_stories])
     self[:current_target_date] = project.current_target_date

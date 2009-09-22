@@ -19,7 +19,9 @@ class Token
 
 	# According to http://www.pivotaltracker.com/help/api#retrieve_token this should work:
 	def get_token(username, password)
-		(Hpricot(open("https://www.pivotaltracker.com/services/tokens/active", :http_basic_authentication => [username, password])).at('guid')).inner_html
+    response = `curl -u '#{username}:#{password}' -X GET https://www.pivotaltracker.com/services/tokens/active`
+    raise Exception, "Could not get token for login" if response.nil? || response.strip.empty?
+    (Hpricot(response).at('guid')).inner_html
 	end
 
 end # class Tracker::Token

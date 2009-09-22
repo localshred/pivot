@@ -3,7 +3,7 @@ class Main
   helpers do
 
     def tracker
-      @tracker ||= Tracker.new(Token.new(current_user))
+      @tracker ||= Tracker.new(current_user[:token].is_a?(Token) ? current_user[:token] : Token.new(current_user))
     end
     
     def nice_date(old_date)

@@ -10,14 +10,13 @@ class Project
       @id      = options[:project_id]
       @api_url = "#{CONFIG[:api_location]}/projects/#{@id}"
       @url     = "#{CONFIG[:site_location]}/projects/#{@id}"
-      puts "+++@api_url = #{@api_url}"
-      puts "+++@token.to_s = #{@token.to_s}"
       @project = Hpricot(open(@api_url, {"X-TrackerToken" => @token.to_s}))
       @stories = nil
-    elsif options.include?(:project)
+    elsif options.include?(:project) && options.include?(:token)
+      @token   = options[:token]
       @project = options[:project]
     else
-      raise ArgumentError, "Valid options are: :project (receives an Hpricot Object) OR :project_id + :token"
+      raise ArgumentError, "Valid options are: :project + :token (receives an Hpricot Object) OR :project_id + :token"
     end
     build_project
   end
@@ -29,7 +28,7 @@ class Project
   
   # Fetches a story with given id
   def story(id)
-    Story.new(:story_id => id, :project_id => @id, :token => @token.to_s)
+    Story.new(:story_id => id, :project_id => @id, :token => @token)
   end
   
   # Creates a story for this project. Receives a set of valid attributes.
@@ -43,7 +42,7 @@ class Project
     end
   
     story = (Hpricot(response.body)/:story)
-    Story.new(:story => story, :project_id => @id, :token => @token.to_s)
+    Story.new(:story => story, :project_id => @id, :token => @token)
   end
   
   # Deletes a story given a Story object or a story_id
@@ -59,11 +58,11 @@ class Project
       http.delete(api_url.path, {"X-TrackerToken" => @token.to_s})
     end
     story = (Hpricot(response.body)/:story)
-    Story.new(:story => story, :project_id => @id, :token => @token.to_s)
+    Story.new(:story => story, :project_id => @id, :token => @token)
   end
   
   def get_iterations(iteration_type=nil)
-    @iterations = Iteration.find(:project_id => @id, :type => iteration_type) || []
+    @iterations = Iteration.find(:project_id => @id, :type => iteration_type, :token => @token) || []
   end
   
   # Gets the stories for a given iteration
@@ -72,19 +71,21 @@ class Project
   end
   
   def num_stories
-    stories.size || 0
+    stories.nil? ? 0 : stories.size
   end
   
   def num_completed_stories
     num_completed_stories = 0
-    stories.each do |story|
-      num_completed_stories += 1 if completed_statuses.include?(story.current_state)
+    unless stories.nil? || stories.empty?
+      stories.each do |story|
+        num_completed_stories += 1 if completed_statuses.include?(story.current_state)
+      end
     end
     num_completed_stories
   end
   
   def current_target_date
-    get_iterations.last.finish_date
+    get_iterations.last.finish_date unless get_iterations.nil? || get_iterations.empty?
   end
   
   def completed_statuses
@@ -114,7 +115,14 @@ class Project
   
   def get_stories
     api_url = "#{CONFIG[:api_location]}/projects/#{@id}/stories"
-    @stories = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token.to_s)}
+    begin
+      response = open(api_url, {"X-TrackerToken" => @token.to_s})
+      @stories = (Hpricot(response)/:story).map {|story| Story.new(:story => story, :project_id => @id, :token => @token)}
+    rescue Exception => e
+      puts "Exception occurred #{e}"
+    ensure
+      @stories
+    end
   end
   
   def init_meta

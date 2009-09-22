@@ -3,18 +3,20 @@ class Iteration
   
   def self.find(options={})
     if options.include?(:project_id) && options.include?(:token)
-      @token = options[:token] || Token.new
-      @project_id = options[:project_id]
-      api_url = "#{CONFIG[:api_location]}/projects/#{@project_id}/iterations/#{options.include?(:type) ? options[:type] : ""}"
-      iterations = (Hpricot(open(api_url, {"X-TrackerToken" => @token.to_s}))/'iteration').map do |iteration|
-        Iteration.new(:iteration => iteration, :project_id => @project_id)
+      token = options[:token]
+      project_id = options[:project_id]
+      api_url = "#{CONFIG[:api_location]}/projects/#{project_id}/iterations/#{options.include?(:type) ? options[:type] : ""}"
+      iterations = (Hpricot(open(api_url, {"X-TrackerToken" => token.to_s}))/'iteration').map do |iteration|
+        Iteration.new(:iteration => iteration, :project_id => project_id)
       end
+    else
+      raise ArgumentError, "Valid options are: :iteration (receives an Hpricot Object) + :project_id OR :project_id + :token"
     end
   end
   
   def initialize(options={})
     if options.include?(:project_id) && options.include?(:iteration_id) && options.include?(:token)
-      @token = options[:token]
+      @token      = options[:token]
       @id         = options[:iteration_id]
       @project_id = options[:project_id]
       @number     = options[:number]
@@ -22,7 +24,7 @@ class Iteration
       @limit      = options[:limit]
       @offset     = options[:offset]
       @api_url    = build_api_url
-      @iteration  = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
+      @iteration  = Hpricot(open(@api_url, {"X-TrackerToken" => @token.to_s}))
     elsif options.include?(:iteration) && options.include?(:project_id)
       @project_id = options[:project_id]
       @iteration  = options[:iteration]

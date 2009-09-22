@@ -8,12 +8,12 @@ class Story
   
   def initialize(options = {})
     if options.include?(:project_id) && options.include?(:story_id) && options.include?(:token)
-      @token      = options[:token].to_s
+      @token      = options[:token]
       @id         = options[:story_id]
       @project_id = options[:project_id]
       @url        = "http://www.pivotaltracker.com/story/show/#{@id}"
       @api_url    = "http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}"
-      @story      = Hpricot(open(@api_url, {"X-TrackerToken" => @token}))
+      @story      = Hpricot(open(@api_url, {"X-TrackerToken" => @token.to_s}))
     elsif options.include?(:story) && options.include?(:project_id)
       @project_id = options[:project_id]
       @story      = options[:story]
@@ -43,7 +43,7 @@ class Story
     parameters = build_story_xml
     api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}")
     response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.put(api_url.path, parameters, {'X-TrackerToken' => @token, 'Content-Type' => 'application/xml'})
+      http.put(api_url.path, parameters, {'X-TrackerToken' => @token.to_s, 'Content-Type' => 'application/xml'})
     end
 
     @story = (Hpricot(response.body)/:story)
@@ -54,7 +54,7 @@ class Story
   def destroy
     api_url = URI.parse("http://www.pivotaltracker.com/services/v2/projects/#{@project_id}/stories/#{@id}")
     response = Net::HTTP.start(api_url.host, api_url.port) do |http|
-      http.delete(api_url.path, {"X-TrackerToken" => @token})
+      http.delete(api_url.path, {"X-TrackerToken" => @token.to_s})
     end
   end
 
