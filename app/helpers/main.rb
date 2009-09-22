@@ -23,8 +23,6 @@ class Main
         diff = (old_date - Date.today).to_i
       end
       
-      puts "diff = #{diff}"
-      
       if diff == 0
         result = 'Today'
         singular = true
