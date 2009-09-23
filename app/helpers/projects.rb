@@ -12,9 +12,10 @@ class Main
         elsif !datetime.is_a? Time
           raise ArgumentError, "Invalid object passed to show_date"
         end
-        full_date = datetime.strftime("%m.%d.%Y")
+        full_date = datetime.strftime("%m.%d.%y")
         @warn = (warn_date_is_past && Date.today > datetime.to_date)
-        haml "%span{:title => \"#{full_date}\", :class => \"#{@warn ? "warn" : ""}\"} #{nice_date(datetime)}", :layout => false
+        # haml "%span{:title => \"#{full_date}\", :class => \"#{@warn ? "warn" : ""}\"} #{nice_date(datetime)}", :layout => false
+        haml "%span{:title => \"#{nice_date(datetime)}\", :class => \"#{@warn ? "warn" : ""}\"} #{full_date}", :layout => false
       end
     end
     

@@ -32,17 +32,14 @@ class Main
       elsif diff <= 7
         result = "#{diff} days"
       elsif diff <= 28
-        result = "#{(diff/7).to_i} weeks"
+        num_weeks = sprintf("%.1f", (Float(diff)/Float(7)))
+        result = "#{num_weeks} weeks"
       elsif diff <= 365
-        num_months = (diff/30).to_i
-        if (diff%30) > 0
-          num_months = Float(num_months)
-          num_months += (Float(diff)%Float(30))/Float(30)
-          num_months = sprintf("%.1f", num_months)
-        end
+        num_months = sprintf("%.1f", (Float(diff)/Float(30)))
         result = "#{num_months} months"
       elsif diff > 365
-        result = "#{(diff/365).to_i}+ years"
+        num_years = sprintf("%.1f", (Float(diff)/Float(365)))
+        result = "#{num_years} years"
       end
       result = (singular ? result : (past ? result+" ago" : "in "+result))
     end
