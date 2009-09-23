@@ -25,11 +25,12 @@ class Main
     end
     
     def notify_developer_link(project)
+      return if project.nil?
       params = {
         "subject" => "Provide Stories for Project",
         "body" => "Please provide stories for pivotal project #{external_project_link(project)}"
       }
-      query_string = params.each.map{|key, val| "#{key}=#{CGI::escape(val)}" }.join("&")
+      query_string = params.map{|key, val| "#{key}=#{CGI::escape(val)}" }.join("&")
       haml "%a{:href => \"mailto:#{project.developer.email}?#{query_string}\", :title => \"Notify Developer to provide stories for project\"} Notify Developer", :layout => false
     end
     

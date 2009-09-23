@@ -44,7 +44,7 @@ class Main
     
     # Check if a user has a particular role
     def has_role?(role = nil)
-      logged_in? && (current_user[:roles].include?(:admin) || current_user[:roles].include?(role.to_sym))
+      logged_in? && !current_user[:roles].nil? && (current_user[:roles].include?(:admin) || current_user[:roles].include?(role.to_sym))
     end
     
     def deny_access(silent=true)
