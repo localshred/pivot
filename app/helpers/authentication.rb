@@ -57,9 +57,6 @@ class Main
         current_user[:roles] = settings(:roles).map do |role, users|
           role if users.nil? || users.empty? || users.include?(username)
         end
-      else
-        puts "====$settings = #{$settings.inspect}"
-        current_user[:roles] = [:user]
       end
     end
     
