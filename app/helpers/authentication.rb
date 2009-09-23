@@ -30,7 +30,7 @@ class Main
         :username => nil,
         :password => nil,
         :token => nil,
-        :roles => nil
+        :roles => [:user]
       }
         
       session[:user] = default_user.merge!(options)
@@ -58,6 +58,7 @@ class Main
           role if users.nil? || users.empty? || users.include?(username)
         end
       else
+        puts "====$settings = #{$settings.inspect}"
         current_user[:roles] = [:user]
       end
     end

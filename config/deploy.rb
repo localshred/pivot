@@ -69,6 +69,11 @@ namespace :app do
       # silently ignore the Interrupt
     end
   end
+  
+  desc "Show settings in production"
+  task :show_settings, :roles => :app do
+    run "less #{shared_path}/config/settings.yml" do |channel, stream, data|; puts data; end
+  end
 
   namespace :apache do
 
