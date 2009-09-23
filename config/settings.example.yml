@@ -1,5 +1,10 @@
 defaults: &defaults
   :log_level: warn
+  :roles:
+    :admin:
+      - pivotaltracker@bidsync.com
+      - bjn@bidsync.com
+    :user:
   :active_record:
       :adapter: sqlite3
       :database: "db/sqlite/pivot.db"

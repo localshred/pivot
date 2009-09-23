@@ -19,7 +19,7 @@ class Main
 
     # Check if the user is logged in
     def logged_in?
-      current_user != nil
+      !current_user.nil?
     end
     
     # Log the user in
@@ -44,7 +44,7 @@ class Main
     
     # Check if a user has a particular role
     def has_role?(role = nil)
-      current_user[:roles].include?(:admin) || current_user[:roles].include?(role.to_sym)
+      logged_in? && (current_user[:roles].include?(:admin) || current_user[:roles].include?(role.to_sym))
     end
     
     def deny_access(silent=true)
@@ -53,8 +53,12 @@ class Main
     end
     
     def assign_roles(username)
-      session[:user][:roles] = settings(:roles).map do |role, users|
-        role if users.nil? || users.empty? || users.include?(username)
+      unless settings(:roles).nil?
+        current_user[:roles] = settings(:roles).map do |role, users|
+          role if users.nil? || users.empty? || users.include?(username)
+        end
+      else
+        current_user[:roles] = [:user]
       end
     end
     
