@@ -8,8 +8,8 @@ set :user,        "pivot"
 set :password,    "quD30Tx55Ehu"
 set :use_sudo,    false
 
-set :local_repository,  "#{user}@#{domain}:/opt/gitrepo/#{application}.git"
-set :repository,  "file:///opt/gitrepo/#{application}.git"
+set :local_repository,  "#{user}@#{domain}:/opt/git/#{application}.git"
+set :repository,  "file:///opt/git/#{application}.git"
 set :deploy_to,   "/var/www/#{application}"
 
 role :app, domain
